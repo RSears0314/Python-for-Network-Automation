@@ -1,0 +1,52 @@
+This is the text of the Wellness Check Python file. 
+This Python script logs into the two main routers in the network, verifies connectivy to the devices, then verifies the ospf neighbors.
+
+#########BEGINNING############
+import time
+import netmiko
+from netmiko import ConnectHandler
+
+cisco_7200_1 = {
+    'device_type': 'cisco_ios',
+    'host':   '198.1.1.1',
+    'username': 'ron',
+    'password': 'ron',
+}
+
+cisco_7200_2 = {
+    'device_type': 'cisco_ios',
+    'host':   '198.1.1.5',
+    'username': 'ron',
+    'password': 'ron',
+}
+
+deviceIP = ["198.1.1.14","198.1.1.10","198.1.1.5","198.1.1.9"] #LIST OF ALL DEVICE IPS that will be pinged in checkping()
+
+def checkPing():
+    for IP in deviceIP:
+        output = net_connect.send_command('ping ' + IP)
+        print(output)
+        time.sleep(3)
+
+def checkOSPF():
+    print("\nVerifying osfp configuration\n")
+    time.sleep(2)
+    output = net_connect.send_command("show running-config | i ospf")
+    print(output)
+    output = net_connect.send_command("show ip ospf neighbor")
+    print(output)
+
+print("\nChecking RouterOne\n")
+net_connect = ConnectHandler(**cisco_7200_1)
+checkPing()
+checkOSPF()
+
+print("\nChecking RouterTwo\n")
+net_connect = ConnectHandler(**cisco_7200_2)
+checkPing()
+checkOSPF()
+
+time.sleep(1)
+print("\nDevice check is finished")
+
+########END#####
